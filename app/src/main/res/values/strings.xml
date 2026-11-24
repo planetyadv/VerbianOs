@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Verbian OS</string>
+    <string name="recently_used">Recently Used</string>
+    <string name="see_all_apps">See all apps on this TV</string>
+    <string name="web_shortcuts">Web Shortcuts</string>
+    <string name="all_apps_title">All Installed Applications</string>
+    <string name="add_web_shortcut">+ Add Web Shortcut</string>
+    <string name="clear_recents">Clear Recents</string>
+    <string name="settings">TV Settings</string>
+    <string name="search_hint">Search apps...</string>
+    <string name="enter_url">Enter Website URL</string>
+    <string name="enter_title">Enter Shortcut Title</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+</resources>

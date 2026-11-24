@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Verbian OS Core Colors -->
+    <color name="bg_main">#1a003c</color>
+    <color name="bg_dark">#12002b</color>
+    <color name="bg_sidebar">#140226</color>
+    <color name="card_surface">#d0d0d8</color>
+    <color name="card_surface_dark">#2d1b4e</color>
+    
+    <!-- Focus & Selection (Violet / Lilac glow from user screenshot) -->
+    <color name="focus_border">#a259ff</color>
+    <color name="focus_border_light">#bf80ff</color>
+    <color name="focus_glow">#4d8338ec</color>
+    <color name="accent_purple">#6930c3</color>
+    <color name="accent_button">#5e35b1</color>
+    <color name="accent_button_focused">#7e57c2</color>
+
+    <color name="text_white">#FFFFFF</color>
+    <color name="text_secondary">#B3FFFFFF</color>
+    <color name="text_dark">#1F1B24</color>
+    
+    <color name="transparent">#00000000</color>
+</resources>
