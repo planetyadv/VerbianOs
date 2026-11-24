@@ -185,6 +185,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onItemClicked(AppModel app) {
+        if (app.getTitle().toLowerCase().contains("youtube") && !app.isWebShortcut()) {
+            showYouTubeSelectorDialog();
+            return;
+        }
+
         if (app.isWebShortcut()) {
             RecentsManager.recordLaunch(this, app);
             Intent intent = new Intent(this, LiteWebActivity.class);
@@ -250,19 +255,72 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void launchYouTube() {
+        showYouTubeSelectorDialog();
+    }
+
+    private void showYouTubeSelectorDialog() {
         PackageManager pm = getPackageManager();
-        Intent ytIntent = pm.getLaunchIntentForPackage("com.google.android.youtube.tv");
-        if (ytIntent == null) {
-            ytIntent = pm.getLaunchIntentForPackage("com.google.android.youtube");
+
+        // Check SmartTube (the ultra-light, no-lag YouTube for Android TV)
+        Intent smartTubeIntent = pm.getLaunchIntentForPackage("com.teamsmart.videomanager.tv");
+        if (smartTubeIntent == null) {
+            smartTubeIntent = pm.getLaunchIntentForPackage("com.liskovsoft.smarttubetv.beta");
         }
-        if (ytIntent != null) {
-            startActivity(ytIntent);
-        } else {
-            Intent intent = new Intent(this, LiteWebActivity.class);
-            intent.putExtra(LiteWebActivity.EXTRA_URL, "https://m.youtube.com");
-            intent.putExtra(LiteWebActivity.EXTRA_TITLE, "YouTube Lite");
-            startActivity(intent);
+        if (smartTubeIntent == null) {
+            smartTubeIntent = pm.getLaunchIntentForPackage("com.liskovsoft.videomanager");
         }
+
+        // Check Official YouTube TV
+        Intent officialYtIntent = pm.getLaunchIntentForPackage("com.google.android.youtube.tv");
+        if (officialYtIntent == null) {
+            officialYtIntent = pm.getLaunchIntentForPackage("com.google.android.youtube");
+        }
+
+        final Intent finalSmartTube = smartTubeIntent;
+        final Intent finalOfficial = officialYtIntent;
+
+        String smartTubeLabel = (finalSmartTube != null) 
+                ? "🚀 SmartTube TV (Легкая версия, 60 FPS — Рекомендуется)" 
+                : "🚀 SmartTube TV (Не установлен — Установить APK)";
+
+        String officialLabel = (finalOfficial != null) 
+                ? "📺 Официальный YouTube TV (Тяжелый, может зависать)" 
+                : "📺 Официальный YouTube TV (Не найден)";
+
+        String[] options = new String[]{
+                smartTubeLabel,
+                "🌐 YouTube Lite (Веб-версия, ~40 МБ ОЗУ, никогда не виснет)",
+                officialLabel,
+                "📁 Открыть Файлы / Установить легкий YouTube из APK"
+        };
+
+        new AlertDialog.Builder(this)
+                .setTitle("▶ Выберите версию YouTube")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        if (finalSmartTube != null) {
+                            startActivity(finalSmartTube);
+                        } else {
+                            // If not installed, guide or open file manager
+                            Toast.makeText(this, "Открываю проводник для установки SmartTube...", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(this, FileManagerActivity.class));
+                        }
+                    } else if (which == 1) {
+                        Intent intent = new Intent(this, LiteWebActivity.class);
+                        intent.putExtra(LiteWebActivity.EXTRA_URL, "https://m.youtube.com");
+                        intent.putExtra(LiteWebActivity.EXTRA_TITLE, "YouTube Lite");
+                        startActivity(intent);
+                    } else if (which == 2) {
+                        if (finalOfficial != null) {
+                            startActivity(finalOfficial);
+                        } else {
+                            Toast.makeText(this, "Официальный YouTube не установлен", Toast.LENGTH_SHORT).show();
+                        }
+                    } else if (which == 3) {
+                        startActivity(new Intent(this, FileManagerActivity.class));
+                    }
+                })
+                .show();
     }
 
     private void showAddWebShortcutDialog() {
